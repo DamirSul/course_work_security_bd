@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app import models
+from app.schemas.resources import ResourceOut
+from app.models import Resource
 
 router = APIRouter()
 
-@router.get("/", response_model=List[dict])
+@router.get("/", response_model=List[ResourceOut])
 def list_resources(db: Session = Depends(get_db)):
-    return db.query(models.Resource).all()
+    return db.query(Resource).all()

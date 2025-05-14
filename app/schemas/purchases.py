@@ -15,3 +15,9 @@ class Purchase(PurchaseBase):
 
     class Config:
         orm_mode = True
+
+class PurchaseOut(PurchaseBase):
+    id: int
+
+    class Config:
+        orm_mode = True

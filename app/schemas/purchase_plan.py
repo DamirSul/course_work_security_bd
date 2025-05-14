@@ -16,3 +16,9 @@ class PurchasePlan(PurchasePlanBase):
 
     class Config:
         orm_mode = True
+
+class PurchasePlanOut(PurchasePlanBase):
+    id: int
+
+    class Config:
+        orm_mode = True

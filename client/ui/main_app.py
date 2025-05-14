@@ -186,11 +186,21 @@ class FlowerApp:
     def load_resources(self):
         try:
             response = requests.get(f"{BASE_URL}/resources/")
+            resources = response.json()
+
+            # Словарь по наименованию
+            resources_by_name = {res["resource_name"]: res["quantity_available"] for res in resources}
+
             self.res_listbox.delete(0, tk.END)
-            for res in response.json():
-                self.res_listbox.insert(tk.END, f"{res['id']} | {res['resource_name']} | {res['quantity_available']}")
+
+            # Показываем фиксированные 3 ресурса
+            for name in ["Удобрения", "Средства защиты", "Доп средства"]:
+                quantity = resources_by_name.get(name, 0)
+                self.res_listbox.insert(tk.END, f"{name}: {quantity} / 100")
+
         except Exception as e:
             messagebox.showerror("Ошибка", str(e))
+
 
 
     def logout(self):
@@ -208,12 +218,22 @@ class FlowerApp:
 
     def load_employees(self):
         try:
-            response = requests.get(f"{BASE_URL}/employees/")
+            role_value = self.user.get("role")
+
+            headers = {"X-Role": role_value}
+
+            response = requests.get(f"{BASE_URL}/employees/", headers=headers)
+
+            if response.status_code != 200:
+                raise Exception(response.json().get("detail", "Ошибка доступа"))
+
             self.emp_listbox.delete(0, tk.END)
             for emp in response.json():
                 self.emp_listbox.insert(tk.END, f"{emp['id']} | {emp['full_name']} | {emp['position']}")
         except Exception as e:
             messagebox.showerror("Ошибка", str(e))
+
+
 
     def init_add_employee_tab(self, parent):
         tab = ttk.Frame(parent)
